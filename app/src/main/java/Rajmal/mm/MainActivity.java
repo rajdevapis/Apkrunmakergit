@@ -68,17 +68,24 @@ public class MainActivity extends Activity {
         Banner startAppBanner = new Banner(this);
         bannerLayout.addView(startAppBanner);
         
+        // StartApp Interstitial preload
+        interstitialAd = new StartAppAd(this);
+        interstitialAd.loadAd();
         
         // StartApp Rewarded Video preload
         loadRewarded();
         
+        // Auto show on open
+        handler.postDelayed(() -> {
+            if (interstitialAd != null) interstitialAd.showAd();
+        }, 2000);
 
         if (btnRewarded != null) {
             btnRewarded.setVisibility(View.VISIBLE);
             btnRewarded.setOnClickListener(v -> showRewarded());
         }
         if (btnInterstitial != null) {
-            btnInterstitial.setVisibility(View.GONE);
+            btnInterstitial.setVisibility(View.VISIBLE);
             btnInterstitial.setOnClickListener(v -> showInterstitial());
         }
     }
