@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
                 return false;
             }
         });
-        webView.loadUrl("https://github-9g6j.gf");
+        webView.loadUrl("https://github-9g6j.onrender.com");
 
         StartAppSDK.init(this, APP_ID, false);
         
