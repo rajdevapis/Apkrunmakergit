@@ -72,8 +72,6 @@ public class MainActivity extends Activity {
         interstitialAd = new StartAppAd(this);
         interstitialAd.loadAd();
         
-        // StartApp Rewarded Video preload
-        loadRewarded();
         
         // Auto show on open
         handler.postDelayed(() -> {
@@ -81,7 +79,7 @@ public class MainActivity extends Activity {
         }, 2000);
 
         if (btnRewarded != null) {
-            btnRewarded.setVisibility(View.VISIBLE);
+            btnRewarded.setVisibility(View.GONE);
             btnRewarded.setOnClickListener(v -> showRewarded());
         }
         if (btnInterstitial != null) {
