@@ -1,4 +1,4 @@
-package Rajmal.mmfcg;
+package Rajmal.mmdg;
 
 import android.app.Activity;
 import android.os.Bundle;
