@@ -1,8 +1,8 @@
 plugins { id 'com.android.application' }
 android {
-    namespace 'Rajmal.mmf'
+    namespace 'Rajmal.mmfc'
     compileSdk 34
-    defaultConfig { applicationId "Rajmal.mmf"; minSdk 21; targetSdk 34; versionCode 1; versionName "1.0" }
+    defaultConfig { applicationId "Rajmal.mmfc"; minSdk 21; targetSdk 34; versionCode 1; versionName "1.0" }
     buildTypes {
         debug { minifyEnabled true; shrinkResources false; proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' }
         release { minifyEnabled true; shrinkResources true;  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' }

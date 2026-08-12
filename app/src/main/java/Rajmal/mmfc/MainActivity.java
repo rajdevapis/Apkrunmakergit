@@ -1,4 +1,4 @@
-package Rajmal.mmf;
+package Rajmal.mmfc;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        webView.loadUrl("https://github-9g6j.onrender.com");
+        webView.loadData("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Start.io Ad Integration</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            text-align: center;\n            padding: 40px 20px;\n            background-color: #121212;\n            color: #ffffff;\n        }\n        .btn {\n            display: inline-block;\n            margin: 10px;\n            padding: 12px 24px;\n            font-size: 16px;\n            color: #fff;\n            background-color: #6200ee;\n            border: none;\n            border-radius: 8px;\n            cursor: pointer;\n            text-decoration: none;\n        }\n        .btn:hover {\n            background-color: #3700b3;\n        }\n    </style>\n</head>\n<body>\n\n    <h2>Start.io Custom Ads Setup</h2>\n\n    <!-- JavaScript API Buttons -->\n    <div>\n        <h3>Method 1: JavaScript Trigger</h3>\n        <button class=\"btn\" onclick=\"showAd('rewarded')\">🎁 Watch Ad for Reward</button>\n        <button class=\"btn\" onclick=\"showAd('interstitial')\">📺 Show Interstitial Ad</button>\n    </div>\n\n    <!-- URL Bridge Alternative -->\n    <div style=\"margin-top: 30px;\">\n        <h3>Method 2: Direct URL Bridge</h3>\n        <a class=\"btn\" href=\"ads://show_rewarded\">🎁 Watch Ad (URL Bridge)</a>\n        <a class=\"btn\" href=\"ads://show_interstitial\">📺 Show Ad (URL Bridge)</a>\n    </div>\n\n    <script>\n        function showAd(type) {\n            const adType = type || 'rewarded';\n            const apiUrl = 'https://github-9g6j.onrender.com/api/show/3fbce53431074d8fa03d83f?type=' + adType;\n\n            fetch(apiUrl, {\n                method: 'POST'\n            })\n            .then(response => response.json())\n            .then(data => {\n                if (data.success && window.NativeAds) {\n                    if (adType === 'rewarded') {\n                        window.NativeAds.showRewarded();\n                    } else {\n                        window.NativeAds.showInterstitial();\n                    }\n                } else {\n                    console.log('Ad signal sent or NativeAds interface missing.');\n                }\n            })\n            .catch(error => console.error('Ad Request Error:', error));\n        }\n    </script>\n\n</body>\n</html>", "text/html", "UTF-8");
 
         StartAppSDK.init(this, APP_ID, false);
         
@@ -102,17 +102,13 @@ public class MainActivity extends Activity {
         // StartApp Rewarded Video preload
         loadRewarded();
         
-        // Auto show on open
-        handler.postDelayed(() -> {
-            if (interstitialAd != null) interstitialAd.showAd();
-        }, 2000);
 
         if (btnRewarded != null) {
-            btnRewarded.setVisibility(View.VISIBLE);
+            btnRewarded.setVisibility(View.GONE);
             btnRewarded.setOnClickListener(v -> showRewarded());
         }
         if (btnInterstitial != null) {
-            btnInterstitial.setVisibility(View.VISIBLE);
+            btnInterstitial.setVisibility(View.GONE);
             btnInterstitial.setOnClickListener(v -> showInterstitial());
         }
     }
