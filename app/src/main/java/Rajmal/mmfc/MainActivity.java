@@ -87,13 +87,10 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        webView.loadUrl("https://eligible-green-l5kvixsi.edgeone.dev/");
+        webView.loadUrl("https://hard-brown-toeocggc.edgeone.dev/");
 
         StartAppSDK.init(this, APP_ID, false);
         
-        // StartApp Banner
-        Banner startAppBanner = new Banner(this);
-        bannerLayout.addView(startAppBanner);
         
         // StartApp Interstitial preload
         interstitialAd = new StartAppAd(this);
