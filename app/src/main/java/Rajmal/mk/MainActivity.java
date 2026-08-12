@@ -1,4 +1,4 @@
-package Rajmal.mm;
+package Rajmal.mk;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+import android.util.Log;
 import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
@@ -22,6 +23,7 @@ import com.startapp.sdk.ads.banner.Banner;
 public class MainActivity extends Activity {
 
     private static final String APP_ID = "207459046";
+    private static final String TAG    = "StartAppAds";
     private static final int RETRY_MS  = 5000;
 
     private WebView webView;
@@ -29,7 +31,6 @@ public class MainActivity extends Activity {
     private Button btnRewarded, btnInterstitial;
     private StartAppAd interstitialAd;
     private StartAppAd rewardedAd;
-    private boolean rewardedReady = false;
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
@@ -75,6 +76,10 @@ public class MainActivity extends Activity {
         // StartApp Rewarded Video preload
         loadRewarded();
         
+        // Auto show on open
+        handler.postDelayed(() -> {
+            if (interstitialAd != null) interstitialAd.showAd();
+        }, 2000);
 
         if (btnRewarded != null) {
             btnRewarded.setVisibility(View.VISIBLE);
@@ -95,27 +100,38 @@ public class MainActivity extends Activity {
         }
     }
 
+    private boolean loadingRewarded = false;
+
     private void loadRewarded() {
-        rewardedAd = new StartAppAd(this);
-        rewardedAd.setVideoListener(new VideoListener() {
-            @Override public void onVideoCompleted() {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this,
-                    "🎁 Reward mila!", Toast.LENGTH_SHORT).show());
-            }
-        });
+        if (loadingRewarded) return;
+        loadingRewarded = true;
+        if (rewardedAd == null) {
+            rewardedAd = new StartAppAd(this);
+            rewardedAd.setVideoListener(new VideoListener() {
+                @Override public void onVideoCompleted() {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                        "🎁 Reward mila!", Toast.LENGTH_SHORT).show());
+                }
+            });
+        }
         rewardedAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, new AdEventListener() {
-            @Override public void onReceiveAd(Ad ad)      { rewardedReady = true; }
+            @Override public void onReceiveAd(Ad ad) {
+                loadingRewarded = false;
+                Log.d(TAG, "Rewarded ad ready");
+            }
             @Override public void onFailedToReceiveAd(Ad ad) {
-                rewardedReady = false;
+                loadingRewarded = false;
+                Log.e(TAG, "Rewarded ad load FAILED — no fill ya App ID galat ho sakta hai");
                 handler.postDelayed(() -> loadRewarded(), RETRY_MS);
             }
         });
     }
 
+    // .isReady() SDK se seedha poochte hain — interstitial ke jaisa reliable pattern,
+    // ek manually-tracked boolean pe depend nahi karte jo callback miss hone par stuck reh sakta tha.
     private void showRewarded() {
-        if (rewardedAd != null && rewardedReady) {
+        if (rewardedAd != null && rewardedAd.isReady()) {
             rewardedAd.showAd();
-            rewardedReady = false;
             handler.postDelayed(() -> loadRewarded(), 1000);
         } else {
             Toast.makeText(this, "Ad load ho raha hai, ek pal ruko...", Toast.LENGTH_SHORT).show();
@@ -131,7 +147,7 @@ public class MainActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         if (interstitialAd != null) interstitialAd.loadAd();
-        if (rewardedAd != null && !rewardedReady) loadRewarded();
+        if (rewardedAd != null && !rewardedAd.isReady()) loadRewarded();
     }
     @Override protected void onDestroy() {
         handler.removeCallbacksAndMessages(null);
