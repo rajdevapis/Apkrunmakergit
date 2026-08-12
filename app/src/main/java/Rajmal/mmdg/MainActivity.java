@@ -23,7 +23,7 @@ import com.startapp.sdk.ads.banner.Banner;
 public class MainActivity extends Activity {
 
     private static final String APP_ID    = "207459046";
-    private static final boolean TEST_MODE = true;
+    private static final boolean TEST_MODE = false;
     private static final String TAG    = "StartAppAds";
     private static final int RETRY_MS  = 2000;
 
