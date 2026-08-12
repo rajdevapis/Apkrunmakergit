@@ -75,10 +75,6 @@ public class MainActivity extends Activity {
         // StartApp Rewarded Video preload
         loadRewarded();
         
-        // Auto show on open
-        handler.postDelayed(() -> {
-            if (interstitialAd != null) interstitialAd.showAd();
-        }, 2000);
 
         if (btnRewarded != null) {
             btnRewarded.setVisibility(View.VISIBLE);
