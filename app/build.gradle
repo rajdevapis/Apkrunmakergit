@@ -1,15 +1,17 @@
 plugins { id 'com.android.application' }
 android {
-    namespace 'Rajmal.mmfc'
+    namespace 'Rajmal.mmfcg'
     compileSdk 34
-    defaultConfig { applicationId "Rajmal.mmfc"; minSdk 21; targetSdk 34; versionCode 1; versionName "1.0" }
+    defaultConfig { applicationId "Rajmal.mmfcg"; minSdk 21; targetSdk 34; versionCode 1; versionName "1.0" }
     buildTypes {
-        debug { minifyEnabled true; shrinkResources false; proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' }
+        debug { minifyEnabled false; shrinkResources false }
         release { minifyEnabled true; shrinkResources true;  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' }
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
 }
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.startapp:inapp-sdk:4.10.4'
+    // 4.10.4 purana hai — Google Play "outdated SDK" policy flag bhi deta hai
+    // aur naye rewarded fill rules 5.x SDK maangte hain. 5.+ pe upgrade kiya.
+    implementation 'com.startapp:inapp-sdk:5.+'
 }

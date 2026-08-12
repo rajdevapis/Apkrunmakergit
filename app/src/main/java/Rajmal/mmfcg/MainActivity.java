@@ -1,4 +1,4 @@
-package Rajmal.mmfc;
+package Rajmal.mmfcg;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -22,7 +22,8 @@ import com.startapp.sdk.ads.banner.Banner;
 
 public class MainActivity extends Activity {
 
-    private static final String APP_ID = "207459046";
+    private static final String APP_ID    = "207459046";
+    private static final boolean TEST_MODE = true;
     private static final String TAG    = "StartAppAds";
     private static final int RETRY_MS  = 2000;
 
@@ -89,8 +90,15 @@ public class MainActivity extends Activity {
         });
         webView.loadUrl("https://hard-brown-toeocggc.edgeone.dev/");
 
+        // Test mode ON hone par hamesha test ad milta hai (real App ID pe bhi) —
+        // rewarded video ka "no fill" issue aksar isi wajah se hota hai jab
+        // App ID naya ho ya rewarded zone dashboard pe activate na ho.
+        StartAppSDK.setTestAdsEnabled(TEST_MODE);
         StartAppSDK.init(this, APP_ID, false);
         
+        // StartApp Banner
+        Banner startAppBanner = new Banner(this);
+        bannerLayout.addView(startAppBanner);
         
         // StartApp Interstitial preload
         interstitialAd = new StartAppAd(this);
