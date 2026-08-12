@@ -1,4 +1,4 @@
-package Rajmal.mk;
+package Rajmal.mmf;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -24,11 +24,12 @@ public class MainActivity extends Activity {
 
     private static final String APP_ID = "207459046";
     private static final String TAG    = "StartAppAds";
-    private static final int RETRY_MS  = 5000;
+    private static final int RETRY_MS  = 2000;
 
     private WebView webView;
     private FrameLayout bannerLayout;
     private Button btnRewarded, btnInterstitial;
+    private View loadingOverlay, errorOverlay;
     private StartAppAd interstitialAd;
     private StartAppAd rewardedAd;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -42,6 +43,14 @@ public class MainActivity extends Activity {
         bannerLayout    = findViewById(R.id.bannerLayout);
         btnRewarded     = findViewById(R.id.btnRewarded);
         btnInterstitial = findViewById(R.id.btnInterstitial);
+        loadingOverlay  = findViewById(R.id.loadingOverlay);
+        errorOverlay    = findViewById(R.id.errorOverlay);
+        Button btnRetry = findViewById(R.id.btnRetry);
+        btnRetry.setOnClickListener(v -> {
+            errorOverlay.setVisibility(View.GONE);
+            loadingOverlay.setVisibility(View.VISIBLE);
+            webView.reload();
+        });
 
         WebSettings ws = webView.getSettings();
         ws.setJavaScriptEnabled(true);
@@ -59,6 +68,23 @@ public class MainActivity extends Activity {
                 if (url.startsWith("ads://show_rewarded"))     { showRewarded();     return true; }
                 if (url.startsWith("ads://show_interstitial")) { showInterstitial(); return true; }
                 return false;
+            }
+            @Override
+            public void onPageStarted(WebView v, String url, android.graphics.Bitmap favicon) {
+                errorOverlay.setVisibility(View.GONE);
+                loadingOverlay.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onPageFinished(WebView v, String url) {
+                loadingOverlay.setVisibility(View.GONE);
+            }
+            @Override
+            public void onReceivedError(WebView v, android.webkit.WebResourceRequest req,
+                    android.webkit.WebResourceError err) {
+                if (req.isForMainFrame()) {
+                    loadingOverlay.setVisibility(View.GONE);
+                    errorOverlay.setVisibility(View.VISIBLE);
+                }
             }
         });
         webView.loadUrl("https://github-9g6j.onrender.com");
