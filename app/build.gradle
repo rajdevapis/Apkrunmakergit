@@ -1,22 +1,18 @@
 plugins { id 'com.android.application' }
 android {
-    namespace 'Rajmal.mmdg'
+    namespace 'Rajmal.mmfcr'
     compileSdk 35
-    defaultConfig { applicationId "Rajmal.mmdg"; minSdk 21; targetSdk 35; versionCode 1; versionName "1.0" }
+    defaultConfig { applicationId "Rajmal.mmfcr"; minSdk 21; targetSdk 35; versionCode 1; versionName "1.0" }
     buildTypes {
         debug { minifyEnabled false; shrinkResources false }
         release { minifyEnabled true; shrinkResources true;  proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' }
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
+    aaptOptions {
+        noCompress 'html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'
+    }
 }
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    // 4.10.4 purana hai — Google Play "outdated SDK" policy flag bhi deta hai,
-    // isliye 5.x line pe upgrade zaroori tha. Lekin "5.+" wildcard use karne se
-    // Gradle khud hi latest 5.3.2 khainch leta hai jo compileSdk 37 maangta hai
-    // (abhi AGP/SDK is machine pe utna naya nahi) — isi se build FAILED hota tha.
-    // Fix: exact version 5.2.0 pin kiya (future me chup-chaap breaking upgrade
-    // nahi aayega) + compileSdk/AGP/Gradle bhi ek notch upar (35 / 8.5.2 / 8.7)
-    // bump kiye taaki margin rahe.
     implementation 'com.startapp:inapp-sdk:5.2.0'
 }

@@ -1,4 +1,4 @@
-package Rajmal.mmdg;
+package Rajmal.mmfcr;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
     private static final boolean TEST_MODE = false;
     private static final String TAG    = "StartAppAds";
     private static final int RETRY_MS  = 2000;
+    private static final int FAST_RETRY_MS = 600;
 
     private WebView webView;
     private FrameLayout bannerLayout;
@@ -34,6 +35,9 @@ public class MainActivity extends Activity {
     private StartAppAd interstitialAd;
     private StartAppAd rewardedAd;
     private final Handler handler = new Handler(Looper.getMainLooper());
+
+    private boolean loadingRewarded = false;
+    private boolean pendingRewarded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +63,8 @@ public class MainActivity extends Activity {
         ws.setLoadWithOverviewMode(true);
         ws.setUseWideViewPort(true);
 
-        // JS Bridge: window.NativeAds.showRewarded() / showInterstitial()
         webView.addJavascriptInterface(new AdBridge(), "NativeAds");
 
-        // URL Bridge: <a href="ads://show_rewarded"> or <a href="ads://show_interstitial">
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView v, String url) {
@@ -88,11 +90,8 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        webView.loadUrl("https://hard-brown-toeocggc.edgeone.dev/");
+        webView.loadUrl("https://github-9g6j.onrender.com");
 
-        // Test mode ON hone par hamesha test ad milta hai (real App ID pe bhi) —
-        // rewarded video ka "no fill" issue aksar isi wajah se hota hai jab
-        // App ID naya ho ya rewarded zone dashboard pe activate na ho.
         StartAppSDK.setTestAdsEnabled(TEST_MODE);
         StartAppSDK.init(this, APP_ID, false);
         
@@ -107,13 +106,17 @@ public class MainActivity extends Activity {
         // StartApp Rewarded Video preload
         loadRewarded();
         
+        // Auto show on open
+        handler.postDelayed(() -> {
+            if (interstitialAd != null) interstitialAd.showAd();
+        }, 2000);
 
         if (btnRewarded != null) {
-            btnRewarded.setVisibility(View.GONE);
+            btnRewarded.setVisibility(View.VISIBLE);
             btnRewarded.setOnClickListener(v -> showRewarded());
         }
         if (btnInterstitial != null) {
-            btnInterstitial.setVisibility(View.GONE);
+            btnInterstitial.setVisibility(View.VISIBLE);
             btnInterstitial.setOnClickListener(v -> showInterstitial());
         }
     }
@@ -127,8 +130,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    private boolean loadingRewarded = false;
-
     private void loadRewarded() {
         if (loadingRewarded) return;
         loadingRewarded = true;
@@ -141,27 +142,36 @@ public class MainActivity extends Activity {
                 }
             });
         }
-        rewardedAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, new AdEventListener() {
+        // Use placement if provided, else default REWARDED_VIDEO
+        AdEventListener listener = new AdEventListener() {
             @Override public void onReceiveAd(Ad ad) {
                 loadingRewarded = false;
                 Log.d(TAG, "Rewarded ad ready");
+                if (pendingRewarded) {
+                    pendingRewarded = false;
+                    showRewarded();
+                }
             }
             @Override public void onFailedToReceiveAd(Ad ad) {
                 loadingRewarded = false;
                 Log.e(TAG, "Rewarded ad load FAILED — no fill ya App ID galat ho sakta hai");
-                handler.postDelayed(() -> loadRewarded(), RETRY_MS);
+                handler.postDelayed(() -> loadRewarded(), pendingRewarded ? FAST_RETRY_MS : RETRY_MS);
             }
-        });
+        };
+        if (null != null) {
+            rewardedAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, null, listener);
+        } else {
+            rewardedAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, listener);
+        }
     }
 
-    // .isReady() SDK se seedha poochte hain — interstitial ke jaisa reliable pattern,
-    // ek manually-tracked boolean pe depend nahi karte jo callback miss hone par stuck reh sakta tha.
     private void showRewarded() {
         if (rewardedAd != null && rewardedAd.isReady()) {
             rewardedAd.showAd();
             handler.postDelayed(() -> loadRewarded(), 1000);
         } else {
             Toast.makeText(this, "Ad load ho raha hai, ek pal ruko...", Toast.LENGTH_SHORT).show();
+            pendingRewarded = true;
             loadRewarded();
         }
     }
