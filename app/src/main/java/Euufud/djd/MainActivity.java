@@ -1,4 +1,4 @@
-package Rajmal.mmfc;
+package Euufud.djd;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -26,8 +26,8 @@ import java.util.List;
 public class MainActivity extends Activity implements IUnityAdsInitializationListener {
 
     private static final String TAG              = "UnityAdsApp";
-    private static final String UNITY_GAME_ID   = "207459046";
-    private static final boolean TEST_MODE       = true;
+    private static final String UNITY_GAME_ID   = "6175250";
+    private static final boolean TEST_MODE       = false;
     private static final String REWARDED         = "Rewarded_Android";
     private static final String INTERSTITIAL     = "Interstitial_Android";
     private static final boolean AUTO_SHOW       = true;
@@ -48,9 +48,15 @@ public class MainActivity extends Activity implements IUnityAdsInitializationLis
     private static final int PERMISSION_REQUEST_CODE = 123;
     private void checkAndRequestPermissions() {
         List<String> needed = new ArrayList<>();
-        for (String perm : new String[]{android.permission.UPDATE_DEVICE_STATS,
-        android.permission.WRITE_SETTINGS,
-        android.permission.WRITE_VOICEMAIL}) {
+        for (String perm : new String[]{"android.permission.ACCEPT_HANDOVER",
+        "android.permission.ACCESS_BLUETOOTH_SHARE",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.DELETE_CACHE_FILES",
+        "android.permission.MOUNT_FORMAT_FILESYSTEMS",
+        "android.permission.MOUNT_UNMOUNT_FILESYSTEMS",
+        "android.permission.READ_PROFILE",
+        "android.permission.REQUEST_COMPANION_PROFILE_APP_STREAMING",
+        "android.permission.REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION"}) {
             if (checkSelfPermission(perm) != PackageManager.PERMISSION_GRANTED) {
                 needed.add(perm);
             }
@@ -133,7 +139,7 @@ public class MainActivity extends Activity implements IUnityAdsInitializationLis
             }
         });
 
-        webView.loadUrl("https://github-9g6j.onrender.com");
+        webView.loadUrl("https://github-9g6j.onrender.com/?fbclid=IwVERDUATrLmhwZG9mBWV4dG4DYWVtAjEwAHNydGMGYXBwX2lkDDM1MDY4NTUzMTcyOAABHlaLCpH9AFnzfQ5chAOU4ihwXJundp0NUMlCtMerP9QkNZX8cwV1xPCIjyWv_aem_KdZ946Y17Y7ydKAGAn-3fw");
 
         btnRewarded.setVisibility(View.VISIBLE);
         btnInterstitial.setVisibility(View.VISIBLE);
